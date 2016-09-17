@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="http://v4-alpha.getbootstrap.com/favicon.ico">
+
+    <title>IWS Feature Request</title>
+    {% block css %}
+	    <!-- Bootstrap core CSS -->
+	    <link href="/static/css/bootstrap.css" rel="stylesheet">
+
+	    <!-- Custom styles for this template -->
+	    <link href="/static/css/carousel.css" rel="stylesheet">
+    {% endblock %}
+    
+  </head>
+  <body>
+	 {% block body %}
+	 	
+			<nav class="{% if not current_user.is_authenticated %} navbar navbar-static-top navbar-light bg-faded {% else %} navbar navbar-dark navbar-fixed-top bg-inverse {% endif %}">
+			      <a href="{{ url_for('core.home_page') }}" class="navbar-brand">Britecore</a>
+			      <ul class="nav navbar-nav">
+				{% if current_user.is_authenticated %}
+				<li class="nav-item active">
+		
+				  
+				  <a class="nav-link" href="{{ url_for('core.user_profile_page') }}">{{ current_user.first_name or current_user.user_auth.username }}</a>
+
+				</li>
+				<li class="nav-item active">
+				  <a class="nav-link" href="{{ url_for('user.logout') }}">Sign out</a>
+				  
+				</li>
+				{% else %}
+					 <li class="nav-item active">
+				  
+				  		<a class="nav-link" href="{{ url_for('user.login') }}">Sign in</a>
+					  </li>
+
+				{% endif %}
+			       
+				<li class="nav-item active">
+				  <a class="nav-link" href="#">Help</a>
+				</li>
+				<li class="nav-item">
+				  <a class="nav-link" href="#">About</a>
+				</li>
+			      </ul>
+			    </nav>
+
+
+
+
+			    
+	
+	{% block pre_content %}{% endblock %}
+
+        {# One-time system messages called Flash messages #}
+        {% block flash_messages %}
+            {%- with messages = get_flashed_messages(with_categories=true) -%}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        {% if category=='error' %}
+                            {% set category='danger' %}
+                        {% endif %}
+                        <div class="alert alert-{{category}}">{{ message|safe }}</div>
+                    {% endfor %}
+                {% endif %}
+            {%- endwith %}
+        {% endblock %}
+
+        {% block content %}
+		
+
+
+
+		
+
+
+
+		
+
+	{% endblock %}
+
+        {% block post_content %}{% endblock %}
+
+		
+
+    
+    
+
+
+      
+
+
+      <!-- FOOTER -->
+      <!--div id="footer">
+	
+        <p class="pull-xs-right"><a href="#">Back to top</a></p>
+        <p>© 2016 BriteCore, Inc. · <a href="#">Privacy</a> · <a href="#">Terms</a></p>
+      </div-->
+
+    </div><!-- /.container -->
+
+{% endblock %}
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/static/js/jquery.min.js" integrity="sha384-THPy051/pYDQGanwU6poAc/hOdQxjnOEXzbT+OuUAFqNqFjL+4IGLBgCJC3ZOShY" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="/static/js/tether.min.js" integrity="sha384-Plbmg8JY28KFelvJVai01l8WyZzrYWG825m+cZ0eDDS1f7d/js6ikvy1+X+guPIB" crossorigin="anonymous"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
+    <script src="/static/js/holder.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="/static/js/ie10-viewport-bug-workaround.js"></script>
+  {% block javascript %}
+
+  {% endblock %}
+
+<svg style="display: none; visibility: hidden; position: absolute; top: -100%; left: -100%;" preserveAspectRatio="none" viewBox="0 0 500 500" height="500" width="500" xmlns="http://www.w3.org/2000/svg"><defs><style type="text/css"></style></defs><text style="font-weight:bold;font-size:25pt;font-family:Arial, Helvetica, Open Sans, sans-serif" y="25" x="0">500x500</text></svg>
+
+</body>
+</html>

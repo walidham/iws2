@@ -1,0 +1,164 @@
+{% extends "common/page_base.html" %}  {# common/page_base.html extends layout.html #}
+
+{% if not current_user.is_authenticated %}
+    {% block css %}
+       <link href="/static/css/bootstrap.css" rel="stylesheet">
+	<link href="/static/css/dashboard.css" rel="stylesheet">
+
+    {% endblock %}
+
+
+{% endif  %}
+{% block content %}
+
+
+
+
+{% if not current_user.is_authenticated %}
+
+<h1> Access dinied </h1>
+{% else %}
+<div class="container-fluid">
+		<div class="row">
+			
+				<div class="col-sm-3 col-md-2 sidebar">
+					<ul class="nav nav-sidebar">
+						<li ><a href="dashboard.html">Home</a></li>
+						<li class="active"><a href="{{ url_for('feature_request') }}">Features Requests<span class="sr-only">(current)</span> </a></li>
+						{% if current_user.roles[0].name == 'admin' %}
+							<li ><a href="#">Clients</a></li>
+							<li ><a href="#">Products</a></li>
+							<li ><a href="#">Users</a></li>
+						{% endif %}
+            
+					</ul>
+          
+				</div>
+			
+			
+			<div class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 main">
+				<h1>IWS Feature Request panel</h1>
+				<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#new_feature" id="new_feature_b">
+					Add
+				</button>
+				<div class="row placeholders">
+            				<div class="table-responsive">
+						  <table class="table table-striped table-inverse">
+							  <thead>
+								  <tr>
+									  <th>#</th>
+									  <th>Title</th>
+									  <th>Description</th>
+									  <th>Client</th>
+									  <th>Client priority</th>
+									  <th>Target date</th>
+									  <th>Ticket URL</th>
+									  <th>Product Area</th>
+									  <th>Action</th>
+								  </tr>
+							  </thead>
+							  <tbody>
+								{% for fr in features %}
+								  <tr>
+									  <th data-bind="text: id">{{fr.id}}</th>
+									  <td data-bind="text: title">{{fr.title}}</td>
+									  <td data-bind="text: description">{{fr.description}}</td>
+									  <td data-bind="text: client_name">{{fr.user_id}}</td>
+									  <td data-bind="text: client_priority">{{fr.priority}}</td>
+									  <td data-bind="text: target_date">{{fr.target_date}}</td>
+									  <td data-bind="text: ticket_url">{{fr.ticket_url}}</td>
+									  <td>{{fr.product_id}}</td>
+									  <td>--</td>
+
+								  </tr>
+								{% endfor %}  
+							  </tbody>
+						  </table>
+					  </div>
+				</div>
+				<h4></h4>
+				
+				
+				
+			</div>
+		</div>
+	</div>
+{% endif %}
+
+<!-- Dialog form new feature -->
+<form data-bind="submit: addFeature">
+<div class="modal fade" id="new_feature" tabindex="-1" role="dialog" aria-labelledby="newFeatureLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h4 class="modal-title" id="newFeatureLabel">Create new Feature</h4>
+      </div>
+      <div class="modal-body">
+        <!---------------------------------------------->
+	
+              <div class="form-group">
+                  <label for="titleText">Title</label>
+                  <input type="text" data-bind="value: newTitle" class="form-control" id="titleText" aria-describedby="titleHelp" placeholder="Enter title">
+                  <small id="titleHelp" class="form-text text-muted">Enter the title of the feature.</small>
+              </div>
+               <div class="form-group">
+                  <label for="descriptionText">Description</label>
+                  <textarea class="form-control" data-bind="value: newDesc" id="descriptionText" rows="3"></textarea>
+              </div>
+              
+              
+              <div class="form-group">
+                  <label for="cilentSelect">Client</label>
+
+                  <select class="form-control" id="cilentSelect" data-bind="options: $root.clients, value: newClient, optionsText: 'company_name'">
+                  </select>
+              </div>
+              <div class="form-group">
+                  <label for="targetDateText">Client Priority</label>
+                  <input type="number" class="form-control" data-bind="value: newClientPriority" id="targetDateText" aria-describedby="targetDateHelp" placeholder="Enter target Date">
+                  <small id="targetDateHelp" class="form-text text-muted">Enter the target Date.</small>
+              </div>
+              <div class="form-group">
+                  <label for="targetDateText">Target Date</label>
+                  <input type="date" class="form-control" data-bind="value: newTargetDate" id="targetDateText" aria-describedby="targetDateHelp" placeholder="Enter target Date" data-provide="datepicker">
+                  <small id="targetDateHelp" class="form-text text-muted">Enter the target Date.</small>
+              </div>
+              
+              
+              
+              <div class="form-group">
+                  <label for="ticketUrlText">Ticket URL</label>
+                  <input type="text" data-bind="value: newTicketUrl" class="form-control" id="ticketUrlText" aria-describedby="tcketUrlHelp" placeholder="Enter ticket URL">
+                  <small id="tcketUrlHelp" class="form-text text-muted">Enter the ticket URL.</small>
+              </div>
+              <div class="form-group">
+                  <label for="cilentSelect">Product</label>
+                  <select class="form-control" id="cilentSelect">
+                      <option>Policies</option>
+                      <option>Billing</option>
+                      <option>Claims</option>
+                      <option>Reports</option>
+                      
+                  </select>
+              </div>
+             
+              
+          
+
+	<!---------- End form ----------------->
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+{% endblock %}
+
+
