@@ -4,7 +4,7 @@
     {% block css %}
        <link href="/static/css/bootstrap.css" rel="stylesheet">
 	<link href="/static/css/dashboard.css" rel="stylesheet">
-
+	 <link href="/static/css/carousel.css" rel="stylesheet">
     {% endblock %}
 
 
@@ -71,13 +71,13 @@
 				  <img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" height="140" width="140">
 				  <h2>Client</h2>
 				  <p>If you are clien please clikc the above button to signin or create new account if you don't have.</p>
-				  <p><a class="btn btn-secondary" href="#" role="button">Sign in »</a></p>
+				  <p><a class="btn btn-secondary" href="{{ url_for('user.login') }}" role="button">Sign in »</a></p>
 				</div><!-- /.col-lg-4 -->
 				<div class="col-lg-4">
 				  <img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" height="140" width="140">
 				  <h2>Britecore User</h2>
 				  <p>If you are Brite core user, use the above button to sigin in. If you have not yet an account please contact admin<br>.</p>
-				  <p><a class="btn btn-secondary" href="#" role="button">Sign in »</a></p>
+				  <p><a class="btn btn-secondary" href="{{ url_for('user.login') }}" role="button">Sign in »</a></p>
 				</div><!-- /.col-lg-4 -->
 				<div class="col-lg-4">
 				  <img class="img-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" height="140" width="140">
