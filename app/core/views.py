@@ -5,9 +5,9 @@
 
 from flask import redirect, render_template, render_template_string, Blueprint
 from flask import request, url_for
-from flask_user import current_user, login_required, roles_accepted
+from flask_user import current_user, login_required, roles_accepted, roles_required
 from app import app, db
-from app.core.models import UserProfileForm, FeatureRequest
+from app.core.models import UserProfileForm, FeatureRequest, User, Product, UsersRoles, Role
 
 core_blueprint = Blueprint('core', __name__, url_prefix='/')
 
@@ -57,7 +57,7 @@ def user_profile_page():
 # Register blueprint
 app.register_blueprint(core_blueprint)
 
-# Feature Rout
+# Feature Route
 @app.route('/features')
 @login_required
 def feature_request():
@@ -70,4 +70,36 @@ def feature_request():
         features = FeatureRequest.query.all()
         return render_template('core/feature_requests.html',
                            features=features)
-    
+
+
+# Client Route
+@app.route('/clients')
+@roles_required('admin')
+@login_required
+def clients():
+           
+    clients = User.query.join(User.roles).filter(Role.name == 'client').group_by(User).all()
+    return render_template('core/clients.html',
+                       clients=clients)
+
+
+# Product Route
+@app.route('/products')
+@roles_required('admin')
+@login_required
+def products():
+           
+    products = Product.query.all()
+    return render_template('core/products.html',
+                       products=products)
+  
+# User Route
+@app.route('/users')
+@roles_required('admin')
+@login_required
+def users():
+           
+    users = User.query.join(User.roles).filter(Role.name == 'user').group_by(User).all()
+    return render_template('core/users.html',
+                       users=users)
+  

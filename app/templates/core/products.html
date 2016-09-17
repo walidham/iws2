@@ -24,10 +24,10 @@
 				<div class="col-sm-3 col-md-2 sidebar">
 					<ul class="nav nav-sidebar">
 						<li ><a href="{{ url_for('core.home_page') }}">Home</a></li>
-						<li class="active"><a href="{{ url_for('feature_request') }}">Features Requests<span class="sr-only">(current)</span> </a></li>
+						<li ><a href="{{ url_for('feature_request') }}">Features Requests </a></li>
 						{% if current_user.roles[0].name == 'admin' %}
 							<li ><a href="{{ url_for('clients') }}">Clients</a></li>
-							<li ><a href="{{ url_for('products') }}">Products</a></li>
+							<li class="active"><a href="{{ url_for('products') }}">Products<span class="sr-only">(current)</span></a></li>
 							<li ><a href="{{ url_for('users') }}">Users</a></li>
 						{% endif %}
             
@@ -37,7 +37,7 @@
 			
 			
 			<div class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 main">
-				<h1>IWS Feature Request panel</h1>
+				<h1>Clients</h1>
 				<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#new_feature" id="new_feature_b">
 					Add
 				</button>
@@ -47,27 +47,20 @@
 							  <thead>
 								  <tr>
 									  <th>#</th>
-									  <th>Title</th>
+									  <th>Productst name</th>
 									  <th>Description</th>
-									  <th>Client</th>
-									  <th>Client priority</th>
-									  <th>Target date</th>
-									  <th>Ticket URL</th>
-									  <th>Product Area</th>
+									  
 									  <th>Action</th>
 								  </tr>
 							  </thead>
 							  <tbody>
-								{% for fr in features %}
+								{% for fr in products %}
 								  <tr>
 									  <th data-bind="text: id">{{fr.id}}</th>
-									  <td data-bind="text: title">{{fr.title}}</td>
+									  <td data-bind="text: title">{{fr.product_name}}</td>
 									  <td data-bind="text: description">{{fr.description}}</td>
-									  <td data-bind="text: client_name">{{fr.user_id}}</td>
-									  <td data-bind="text: client_priority">{{fr.priority}}</td>
-									  <td data-bind="text: target_date">{{fr.target_date}}</td>
-									  <td data-bind="text: ticket_url">{{fr.ticket_url}}</td>
-									  <td>{{fr.product_id}}</td>
+									  <
+									  
 									  <td>--</td>
 
 								  </tr>
@@ -94,55 +87,45 @@
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="newFeatureLabel">Create new Feature</h4>
+        <h4 class="modal-title" id="newFeatureLabel">Create new Client</h4>
       </div>
       <div class="modal-body">
         <!---------------------------------------------->
 	
               <div class="form-group">
-                  <label for="titleText">Title</label>
-                  <input type="text" data-bind="value: newTitle" class="form-control" id="titleText" aria-describedby="titleHelp" placeholder="Enter title">
-                  <small id="titleHelp" class="form-text text-muted">Enter the title of the feature.</small>
+                  <label for="firstNameText">First name</label>
+                  <input type="text" data-bind="value: newTitle" class="form-control" id="firstNameText" aria-describedby="firstNameHelp" placeholder="Enter first name">
+                  <small id="firstNameHelp" class="form-text text-muted">Enter the first name.</small>
               </div>
                <div class="form-group">
-                  <label for="descriptionText">Description</label>
-                  <textarea class="form-control" data-bind="value: newDesc" id="descriptionText" rows="3"></textarea>
+                  <label for="lastNameText">Last name</label>
+                  <input type="text" data-bind="value: newTitle" class="form-control" id="lastNameText" aria-describedby="lastNameHelp" placeholder="Enter last name">
+              </div>
+              </div>
+               <div class="form-group">
+                  <label for="emailText">Email</label>
+                  <input type="email" data-bind="value: newTitle" class="form-control" id="emailText" aria-describedby="emailHelp" placeholder="Enter Email">
               </div>
               
               
-              <div class="form-group">
-                  <label for="cilentSelect">Client</label>
-
-                  <select class="form-control" id="cilentSelect" data-bind="options: $root.clients, value: newClient, optionsText: 'company_name'">
-                  </select>
-              </div>
               <div class="form-group">
                   <label for="targetDateText">Client Priority</label>
                   <input type="number" class="form-control" data-bind="value: newClientPriority" id="targetDateText" aria-describedby="targetDateHelp" placeholder="Enter target Date">
-                  <small id="targetDateHelp" class="form-text text-muted">Enter the target Date.</small>
-              </div>
-              <div class="form-group">
-                  <label for="targetDateText">Target Date</label>
-                  <input type="date" class="form-control" data-bind="value: newTargetDate" id="targetDateText" aria-describedby="targetDateHelp" placeholder="Enter target Date" data-provide="datepicker">
-                  <small id="targetDateHelp" class="form-text text-muted">Enter the target Date.</small>
+                  <small id="targetDateHelp" class="form-text text-muted">Enter the priority.</small>
               </div>
               
               
               
+              
               <div class="form-group">
-                  <label for="ticketUrlText">Ticket URL</label>
-                  <input type="text" data-bind="value: newTicketUrl" class="form-control" id="ticketUrlText" aria-describedby="tcketUrlHelp" placeholder="Enter ticket URL">
-                  <small id="tcketUrlHelp" class="form-text text-muted">Enter the ticket URL.</small>
+                  <label for="ticketUrlText">Password</label>
+                  <input type="password" data-bind="value: newTicketUrl" class="form-control" id="ticketUrlText" aria-describedby="tcketUrlHelp" placeholder="Enter password">
+                  <small id="tcketUrlHelp" class="form-text text-muted">Enter the password.</small>
               </div>
               <div class="form-group">
-                  <label for="cilentSelect">Product</label>
-                  <select class="form-control" id="cilentSelect">
-                      <option>Policies</option>
-                      <option>Billing</option>
-                      <option>Claims</option>
-                      <option>Reports</option>
-                      
-                  </select>
+                  <label for="ticketUrlText">Confirm Password</label>
+                  <input type="password" data-bind="value: newTicketUrl" class="form-control" id="ticketUrlText" aria-describedby="tcketUrlHelp" placeholder="Enter confirmation">
+                  <small id="tcketUrlHelp" class="form-text text-muted">Enter the password confirmation.</small>
               </div>
              
               
