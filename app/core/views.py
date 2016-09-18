@@ -15,7 +15,10 @@ core_blueprint = Blueprint('core', __name__, url_prefix='/')
 # The Home page is accessible to anyone
 @core_blueprint.route('')
 def home_page():
-    return render_template('core/home_page.html')
+    if not current_user.is_authenticated:
+        return render_template('core/guest_page.html')
+    else:
+        return render_template('core/home_page.html')
 
 
 # The User page is accessible to authenticated users (users that have logged in)
