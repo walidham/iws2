@@ -1,14 +1,6 @@
 {% extends "common/page_base.html" %}  {# common/page_base.html extends layout.html #}
 
-{% if not current_user.is_authenticated %}
-    {% block css %}
-       <link href="/static/css/bootstrap.css" rel="stylesheet">
-	<link href="/static/css/dashboard.css" rel="stylesheet">
 
-    {% endblock %}
-
-
-{% endif  %}
 {% block content %}
 
 	<div class="row">
