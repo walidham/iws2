@@ -96,4 +96,15 @@ You can make use of the following users:
     # Show all DB migration commands
     python manage.py db
 
+## Fix error : mkvirtualenv command not found
+
+1st, ensure you're installing with sudo: 
+    sudo pip install virtualenvwrapper
+
+2nd, append the following lines to your .bashrc file (with nano ~/.bashrc):
+    export WORKON_HOME=$HOME/.virtualenvs
+    source /usr/local/bin/virtualenvwrapper.sh
+
+3rd, reload your profile
+    source ~/.bashrc
 
