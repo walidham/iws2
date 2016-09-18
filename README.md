@@ -99,6 +99,7 @@ You can make use of the following users:
 ## Fix error : mkvirtualenv command not found
 
 1st, ensure you're installing with sudo: 
+
     sudo pip install virtualenvwrapper
 
 2nd, append the following lines to your .bashrc file (with nano ~/.bashrc):
