@@ -102,9 +102,11 @@ You can make use of the following users:
     sudo pip install virtualenvwrapper
 
 2nd, append the following lines to your .bashrc file (with nano ~/.bashrc):
+
     export WORKON_HOME=$HOME/.virtualenvs
     source /usr/local/bin/virtualenvwrapper.sh
 
 3rd, reload your profile
+
     source ~/.bashrc
 
