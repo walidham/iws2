@@ -8,7 +8,7 @@
 		<div class="col-12">
 			<h1>Clients</h1>
 			<div class="row">
-			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#new_feature" id="new_feature_b">
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#new_client" id="new_feature_b">
 				Add
 			</button>
 			</div>
@@ -21,24 +21,26 @@
 								  <th>First name</th>
 								  <th>Last Name</th>
 								  <th>Company Name</th>
+								  <th>Email</th>
 								  <th>Client priority</th>
 								  
 								  <th>Action</th>
 							  </tr>
 						  </thead>
-						  <tbody>
-							{% for fr in clients %}
+						  <tbody data-bind="foreach: clients">
+							{# % for fr in clients % #}
 							  <tr>
-								  <th data-bind="text: id">{{fr.id}}</th>
-								  <td data-bind="text: title">{{fr.last_name}}</td>
-								  <td data-bind="text: description">{{fr.first_name}}</td>
-								  <td data-bind="text: client_name">{{fr.company_name}}</td>
-								  <td data-bind="text: client_priority">{{fr.priority}}</td>
+								  <th data-bind="text: id">{# {fr.id} #}</th>
+								  <td data-bind="text: last_name">{# {fr.last_name} #}</td>
+								  <td data-bind="text: first_name">{# {fr.first_name} #}</td>
+								  <td data-bind="text: company_name">{# {fr.company_name} #}</td>
+								  <td data-bind="text: email">{# {fr.email} #}</td>
+								  <td data-bind="text: priority">{# {fr.priority} #}</td>
 								  
 								  <td>--</td>
 
 							  </tr>
-							{% endfor %}  
+							{# % endfor %#}  
 						  </tbody>
 					  </table>
 				</div>
@@ -50,60 +52,57 @@
 
 
 <!-- Dialog form new feature -->
-<form data-bind="submit: addFeature">
-<div class="modal fade" id="new_feature" tabindex="-1" role="dialog" aria-labelledby="newFeatureLabel" aria-hidden="true">
+<form data-bind="submit: addClient" id="form_client">
+<div class="modal fade" id="new_client" tabindex="-1" role="dialog" aria-labelledby="newClienLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="newFeatureLabel">Create new Client</h4>
+        <h4 class="modal-title" id="newClienLabel">Create new client</h4>
       </div>
       <div class="modal-body">
         <!---------------------------------------------->
-	
+		<div class="form-group">
+                  <label for="firstNameText">First Name</label>
+                  <input type="text" data-bind="value: newFirstName" class="form-control" id="firstNameText" aria-describedby="firstNameHelp" 
+                  placeholder="Enter contact first name">
+                  <small id="firstNameHelp" class="form-text text-muted">Enter contact first name of company.</small>
+              </div>
               <div class="form-group">
-                  <label for="firstNameText">First name</label>
-                  <input type="text" data-bind="value: newTitle" class="form-control" id="firstNameText" aria-describedby="firstNameHelp" placeholder="Enter first name">
-                  <small id="firstNameHelp" class="form-text text-muted">Enter the first name.</small>
+                  <label for="lastNameText">Last Name</label>
+                  <input type="text" data-bind="value: newLastName" class="form-control" id="lastNameText" aria-describedby="lastNameHelp" 
+                  placeholder="Enter contact last name">
+                  <small id="lastNameHelp" class="form-text text-muted">Enter contact last name of company.</small>
               </div>
-               <div class="form-group">
-                  <label for="lastNameText">Last name</label>
-                  <input type="text" data-bind="value: newTitle" class="form-control" id="lastNameText" aria-describedby="lastNameHelp" placeholder="Enter last name">
+              <div class="form-group">
+                  <label for="companyNameText">Company Name</label>
+                  <input type="text" data-bind="value: newClientCN" class="form-control" id="companyNameText" aria-describedby="companyNameHelp" placeholder="Enter company name">
+                  <small id="companyNameHelp" class="form-text text-muted">Enter the name of company.</small>
               </div>
-              
-               <div class="form-group">
+	      <div class="form-group">
                   <label for="emailText">Email</label>
-                  <input type="email" data-bind="value: newTitle" class="form-control" id="emailText" aria-describedby="emailHelp" placeholder="Enter Email">
+                  <input type="text" data-bind="value: newClientEmail" class="form-control" id="emailText" aria-describedby="emailHelp" placeholder="Enter Email">
+                  <small id="emailText" class="form-text text-muted">Enter Email.</small>
               </div>
-              
+               
               
               <div class="form-group">
-                  <label for="targetDateText">Client Priority</label>
-                  <input type="number" class="form-control" data-bind="value: newClientPriority" id="targetDateText" aria-describedby="targetDateHelp" placeholder="Enter target Date">
-                  <small id="targetDateHelp" class="form-text text-muted">Enter the priority.</small>
-              </div>
-              
-              
-              
-              
-              <div class="form-group">
-                  <label for="ticketUrlText">Password</label>
-                  <input type="password" data-bind="value: newTicketUrl" class="form-control" id="ticketUrlText" aria-describedby="tcketUrlHelp" placeholder="Enter password">
-                  <small id="tcketUrlHelp" class="form-text text-muted">Enter the password.</small>
-              </div>
-              <div class="form-group">
-                  <label for="ticketUrlText">Confirm Password</label>
-                  <input type="password" data-bind="value: newTicketUrl" class="form-control" id="ticketUrlText" aria-describedby="tcketUrlHelp" placeholder="Enter confirmation">
-                  <small id="tcketUrlHelp" class="form-text text-muted">Enter the password confirmation.</small>
+                  <label for="prioritySelect">Priority</label>
+                  <select class="form-control" id="prioritySelect">
+                      <option>1</option>
+                      <option>2</option>
+                      <option>3</option>
+                      <option>4</option>
+                      <option>5</option>
+                  </select>
               </div>
              
               
-          
+         
 
 	<!---------- End form ----------------->
-
 
       </div>
       <div class="modal-footer">
@@ -112,7 +111,13 @@
     </div>
   </div>
 </div>
-</form>
+ </form>
+{% endblock %}
+
+{% block javascript %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='client.js') }}"></script>
+
 {% endblock %}
 
 

@@ -25,7 +25,7 @@ class User(db.Model, UserMixin):
     active = db.Column('is_active', db.Boolean(), nullable=False, server_default='0')
     first_name = db.Column(db.Unicode(50), nullable=False, server_default=u'')
     last_name = db.Column(db.Unicode(50), nullable=False, server_default=u'')
-    compnay_name = db.Column(db.Unicode(50), nullable=False, server_default=u'')
+    company_name = db.Column(db.Unicode(50), nullable=False, server_default=u'')
     priority = db.Column(db.Integer, nullable=False, server_default='1')
 
     # Relationships
@@ -92,7 +92,8 @@ class FeatureRequest(db.Model):
     title = db.Column(db.Unicode(255), nullable=False, server_default=u'')
     description = db.Column(db.Unicode(500), nullable=False, server_default=u'')
     target_date = db.Column(db.DateTime, nullable=False, server_default=str(datetime.utcnow))
-    priority = db.Column(db.Integer, nullable=False, server_default='1')
+    client_priority = db.Column(db.Integer, nullable=False, server_default='1')
+    global_priority = db.Column(db.Integer, nullable=False, server_default='1')
     ticket_url = db.Column(db.Unicode(500), nullable=True, server_default=u'')
 
     #Relationship

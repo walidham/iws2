@@ -9,7 +9,7 @@
 		<meta name="description" content="">
 		<meta name="author" content="">
 		<link rel="icon" href="http://v4-alpha.getbootstrap.com/favicon.ico">
-
+		<meta name="csrf-token" content="{{ csrf_token() }}">
 		<title>IWS Feature Request</title>
 	
 		{% block css %}
@@ -116,9 +116,11 @@
 {% endblock %}
 		
 {% block javascript %}
-	<script src="/static/js/jquery.min.js" 
-		integrity="sha384-THPy051/pYDQGanwU6poAc/hOdQxjnOEXzbT+OuUAFqNqFjL+4IGLBgCJC3ZOShY" crossorigin="anonymous">
+	<script src="/static/js/jquery-1.9.1.js">
 	</script>
+	<script src="/static/js/jquery-ui.js">
+	</script>
+	
 	<script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
 	<script src="/static/js/tether.min.js" 
 		integrity="sha384-Plbmg8JY28KFelvJVai01l8WyZzrYWG825m+cZ0eDDS1f7d/js6ikvy1+X+guPIB" crossorigin="anonymous">
@@ -128,13 +130,25 @@
 	<script src="/static/js/holder.min.js"></script>
 	<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 	<script src="/static/js/ie10-viewport-bug-workaround.js"></script>
+	<script src="/static/js/knockout-3.4.0.js"></script>
 {% endblock %}
 <script>
     $(document).ready(function () {
-    val = "{{request.endpoint}}";
-    val = val.replace(".","");
+	    val = "{{request.endpoint}}";
+	    val = val.replace(".","");
 	
-    $("#"+val).addClass("active"); })
+	    $("#"+val).addClass("active"); 
+	    
+	    var csrftoken = $('meta[name=csrf-token]').attr('content');
+
+		$.ajaxSetup({
+		    beforeSend: function(xhr, settings) {
+			if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+			    xhr.setRequestHeader("X-CSRFToken", csrftoken)
+			}
+		    }
+		})
+	})
 </script>	
 </body>
 </html>
