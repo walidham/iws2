@@ -1,3 +1,5 @@
+var old_global_priority =[]
+
 function Client(data) {
     
     this.id = data.id;
@@ -114,6 +116,15 @@ function FeatureListViewModel() {
 	    return new Feature(item,self);
 	});
 	self.features(t);
+	old_global_priority=[];
+		//table of old global priorities
+	    	ko.utils.arrayForEach(self.features(), function(c) {
+		 	
+	
+			old_global_priority.push(c.global_priority());
+		
+			///////////:
+	    	});
     });
 
     self.save = function() {
@@ -145,28 +156,39 @@ function FeatureListViewModel() {
     
     self.savePriorities = function() {
     	var priority = 0;
-    	var old_global_priority =[]
+    	
     	var index = 0;
-    	//table of old global priorities
-    	ko.utils.arrayForEach(self.features(), function(c) {
-	 	
-        
-        	old_global_priority.push(c.global_priority());
-        	
-        	///////////:
-    	});
+    	
     	
 	 ko.utils.arrayForEach(self.features(), function(c) {
 	 	priority = priority+1;
         	/////////////
         	
-        	c.global_priority(priority);
+        	//c.global_priority(priority);
         	save_priority(c.id(),priority,old_global_priority[index]);
         
         	index++;
         	
         	///////////:
     	});
+    	
+    	$.getJSON('/features_list', function(featureModels) {
+   
+		var t = $.map(featureModels.features, function(item) {
+	
+		    return new Feature(item,self);
+		});
+		self.features(t);
+		old_global_priority=[];
+		//table of old global priorities
+	    	ko.utils.arrayForEach(self.features(), function(c) {
+		 	
+	
+			old_global_priority.push(c.global_priority());
+		
+			///////////:
+	    	});
+	    });
 	
     };
 	// New code
