@@ -16,11 +16,11 @@ def create_users():
     client_role = find_or_create_role('client', u'Client')
 
     # Add users
-    admin = find_or_create_user(u'Admin', u'Example', u'admin@example.com', 'Password1', admin_role)
-    user = find_or_create_user(u'User', u'Example', u'user@example.com', 'Password1',user_role)
-    clientA = find_or_create_user(u'Client A', u'Company Client A', u'clientA@example.com', 'Password1',client_role)
-    clientB = find_or_create_user(u'Client B', u'Company Client B', u'clientB@example.com', 'Password1',client_role)
-    clientC = find_or_create_user(u'Client C', u'Company Client C', u'clientC@example.com', 'Password1',client_role)
+    admin = find_or_create_user(u'Admin', u'Example', u'admin@example.com', 'Password1','IWS Admin', admin_role)
+    user = find_or_create_user(u'User', u'Example', u'user@example.com', 'Password1','USER IWS', user_role)
+    clientA = find_or_create_user(u'Client A', u'Company Client A', u'clientA@example.com', 'Password1','Comapny A', client_role)
+    clientB = find_or_create_user(u'Client B', u'Company Client B', u'clientB@example.com', 'Password1','Company B', client_role)
+    clientC = find_or_create_user(u'Client C', u'Company Client C', u'clientC@example.com', 'Password1','Company C', client_role)
 
     #Add Product
     prod1 = find_or_create_product('Policies','Policies Products')
@@ -31,36 +31,36 @@ def create_users():
     
     # Add features Requests for client A
     fr = find_or_create_feature('Item A1','This is Feature Request added by User IWS',
-                                 datetime.utcnow(),'http://www.britecore.com',clientA,prod1);
+                                 datetime.utcnow(),'http://www.britecore.com',clientA,prod1,1,1);
                                  
     fr = find_or_create_feature('Item A2','This is Feature Request added by User IWS',
-                                 datetime.utcnow(),'http://www.britecore.com',clientA,prod2);
+                                 datetime.utcnow(),'http://www.britecore.com',clientA,prod2,2,2);
                                  
     fr = find_or_create_feature('Item A3','This is Feature Request added by User IWS',
-                                 datetime.utcnow(),'http://www.britecore.com',clientA,prod3);
+                                 datetime.utcnow(),'http://www.britecore.com',clientA,prod3,3,3);
                                  
     # Add features Requests for client B
     fr = find_or_create_feature('Item B1','This is Feature Request added by User IWS',
-                                 datetime.utcnow(),'http://www.britecore.com',clientB,prod1);
+                                 datetime.utcnow(),'http://www.britecore.com',clientB,prod1,4,1);
                                  
     fr = find_or_create_feature('Item B2','This is Feature Request added by User IWS',
-                                 datetime.utcnow(),'http://www.britecore.com',clientB,prod2);
+                                 datetime.utcnow(),'http://www.britecore.com',clientB,prod2,5,2);
                                  
     fr = find_or_create_feature('Item B3','This is Feature Request added by User IWS',
-                                 datetime.utcnow(),'http://www.britecore.com',clientB,prod3); 
+                                 datetime.utcnow(),'http://www.britecore.com',clientB,prod3,6,3); 
                                  
                                  
                                         
     
     # Add features Requests for client C
     fr = find_or_create_feature('Item C1','This is Feature Request added by User IWS',
-                                 datetime.utcnow(),'http://www.britecore.com',clientC,prod1);
+                                 datetime.utcnow(),'http://www.britecore.com',clientC,prod1,7,1);
                                  
     fr = find_or_create_feature('Item C2','This is Feature Request added by User IWS',
-                                 datetime.utcnow(),'http://www.britecore.com',clientC,prod2);
+                                 datetime.utcnow(),'http://www.britecore.com',clientC,prod2,8,2);
                                  
     fr = find_or_create_feature('Item C3','This is Feature Request added by User IWS',
-                                 datetime.utcnow(),'http://www.britecore.com',clientC,prod3); 
+                                 datetime.utcnow(),'http://www.britecore.com',clientC,prod3,9,3); 
     # Save to DB
     db.session.commit()
 
@@ -74,7 +74,7 @@ def find_or_create_role(name, label):
     return role
 
 
-def find_or_create_user(first_name, last_name, email, password, role=None):
+def find_or_create_user(first_name, last_name, email, password, company_name ,role=None):
     """ Find existing user or create new user """
     user = User.query.filter(User.email == email).first()
     if not user:
@@ -83,6 +83,7 @@ def find_or_create_user(first_name, last_name, email, password, role=None):
                     last_name=last_name,
                     password=app.user_manager.hash_password(password),
                     active=True,
+                    company_name = company_name,
                     confirmed_at=datetime.utcnow())
         if role:
             user.roles.append(role)
@@ -99,10 +100,12 @@ def find_or_create_product(product_name, description):
         db.session.add(prod)
     return prod
 
-def find_or_create_feature(title, description, target_date, ticket_url, user, prod):
+def find_or_create_feature(title, description, target_date, ticket_url, user, prod,gp,cp):
     fr = FeatureRequest.query.filter(FeatureRequest.title == title).first()
     if not fr:
-        fr = FeatureRequest(title=title, description=description, target_date=target_date, ticket_url=ticket_url, user_id=user.id, product_id=prod.id)
+        fr = FeatureRequest(title=title, description=description, target_date=target_date, 
+                            ticket_url=ticket_url, user_id=user.id, product_id=prod.id,
+                            global_priority = gp, client_priority=cp)
    
         db.session.add(fr)
     return fr

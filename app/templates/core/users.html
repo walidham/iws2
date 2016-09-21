@@ -1,105 +1,102 @@
 {% extends "common/page_base.html" %}  {# common/page_base.html extends layout.html #}
 
-{% block content %}
-		<div class="row">
-			<div class="col-12">
-				<h1>IWS Users</h1>
-				<div class="row">
-				<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#new_feature" id="new_feature_b">
-					Add
-				</button>
-				</div>
-				<div class="row placeholders">
-            				<div class="table-responsive">
-						  <table class="table table-striped table-inverse">
-							  <thead>
-								  <tr>
-									  <th>#</th>
-									  <th>First name</th>
-									  <th>Last Name</th>
-									  <th>Company Name</th>
-									  <th>Client priority</th>
-									  
-									  <th>Action</th>
-								  </tr>
-							  </thead>
-							  <tbody>
-								{% for fr in users %}
-								  <tr>
-									  <th data-bind="text: id">{{fr.id}}</th>
-									  <td data-bind="text: title">{{fr.last_name}}</td>
-									  <td data-bind="text: description">{{fr.first_name}}</td>
-									  <td data-bind="text: client_name">{{fr.company_name}}</td>
-									  <td data-bind="text: client_priority">{{fr.priority}}</td>
-									  
-									  <td>--</td>
 
-								  </tr>
-								{% endfor %}  
-							  </tbody>
-						  </table>
-					  </div>
+{% block content %}
+
+	<div class="row">
+				
+		<div class="col-12">
+			<h1>IWS Users</h1>
+			<div class="row">
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#new_user" id="new_user_b">
+				Add
+			</button>
+			</div>
+			<div class="row placeholders">
+        			<div class="table-responsive">
+					  <table class="table table-striped table-inverse">
+						  <thead>
+							  <tr>
+								  <th>#</th>
+								  <th>First name</th>
+								  <th>Last Name</th>
+								  <th>Email</th>
+								  
+								  <th>Action</th>
+							  </tr>
+						  </thead>
+						  <tbody data-bind="foreach: users">
+							{# % for fr in clients % #}
+							  <tr>
+								  <th data-bind="text: id">{# {fr.id} #}</th>
+								  <td data-bind="text: last_name">{# {fr.last_name} #}</td>
+								  <td data-bind="text: first_name">{# {fr.first_name} #}</td>
+								  <td data-bind="text: email">{# {fr.email} #}</td>
+								  <td>--</td>
+
+							  </tr>
+							{# % endfor %#}  
+						  </tbody>
+					  </table>
 				</div>
 			</div>
+				
 		</div>
+	</div>
 
 
 
 <!-- Dialog form new feature -->
-<form data-bind="submit: addFeature">
-<div class="modal fade" id="new_feature" tabindex="-1" role="dialog" aria-labelledby="newFeatureLabel" aria-hidden="true">
+<form data-bind="submit: addUser" id="form_user">
+<div class="modal fade" id="new_user" tabindex="-1" role="dialog" aria-labelledby="newClienLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="newFeatureLabel">Create new IWS User</h4>
+        <h4 class="modal-title" id="newClienLabel">Create new User</h4>
       </div>
       <div class="modal-body">
         <!---------------------------------------------->
-	
+		<div class="form-group">
+                  <label for="firstNameText">First Name</label>
+                  <input type="text" data-bind="value: newFirstName" class="form-control" id="firstNameText" aria-describedby="firstNameHelp" 
+                  placeholder="Enter contact first name">
+                  <small id="firstNameHelp" class="form-text text-muted">Enter user first name.</small>
+              </div>
               <div class="form-group">
-                  <label for="firstNameText">First name</label>
-                  <input type="text" data-bind="value: newTitle" class="form-control" id="firstNameText" aria-describedby="firstNameHelp" placeholder="Enter first name">
-                  <small id="firstNameHelp" class="form-text text-muted">Enter the first name.</small>
+                  <label for="lastNameText">Last Name</label>
+                  <input type="text" data-bind="value: newLastName" class="form-control" id="lastNameText" aria-describedby="lastNameHelp" 
+                  placeholder="Enter contact last name">
+                  <small id="lastNameHelp" class="form-text text-muted">Enter user last name.</small>
               </div>
-               <div class="form-group">
-                  <label for="lastNameText">Last name</label>
-                  <input type="text" data-bind="value: newTitle" class="form-control" id="lastNameText" aria-describedby="lastNameHelp" placeholder="Enter last name">
-              </div>
-             
-               <div class="form-group">
+              
+	      <div class="form-group">
                   <label for="emailText">Email</label>
-                  <input type="email" data-bind="value: newTitle" class="form-control" id="emailText" aria-describedby="emailHelp" placeholder="Enter Email">
+                  <input type="text" data-bind="value: newUserEmail" class="form-control" id="emailText" aria-describedby="emailHelp" placeholder="Enter Email">
+                  <small id="emailText" class="form-text text-muted">Enter Email.</small>
               </div>
-              
+               
               
               <div class="form-group">
-                  <label for="targetDateText">Client Priority</label>
-                  <input type="number" class="form-control" data-bind="value: newClientPriority" id="targetDateText" aria-describedby="targetDateHelp" placeholder="Enter target Date">
-                  <small id="targetDateHelp" class="form-text text-muted">Enter the priority.</small>
+                  <label for="passwordText">Password</label>
+                  <input type="password" data-bind="value: newPassword" class="form-control" id="passwordText" 
+                  aria-describedby="passwordHelp" placeholder="Enter Password">
+                  <small id="passwordHelp" class="form-text text-muted">Enter Password(8 caracters, use at least one Upercase and one number).</small>
               </div>
               
-              
-              
-              
               <div class="form-group">
-                  <label for="ticketUrlText">Password</label>
-                  <input type="password" data-bind="value: newTicketUrl" class="form-control" id="ticketUrlText" aria-describedby="tcketUrlHelp" placeholder="Enter password">
-                  <small id="tcketUrlHelp" class="form-text text-muted">Enter the password.</small>
-              </div>
-              <div class="form-group">
-                  <label for="ticketUrlText">Confirm Password</label>
-                  <input type="password" data-bind="value: newTicketUrl" class="form-control" id="ticketUrlText" aria-describedby="tcketUrlHelp" placeholder="Enter confirmation">
-                  <small id="tcketUrlHelp" class="form-text text-muted">Enter the password confirmation.</small>
+                  <label for="confPasswordText">Confirm Password</label>
+                  <input type="password" data-bind="value: newConfPassword" class="form-control" id="confPasswordText" 
+                  aria-describedby="confPasswordHelp" placeholder="Enter Password Confirmation">
+                  <small id="confPasswordHelp" class="form-text text-muted">Enter Password Confirmation.</small>
               </div>
              
               
-          
+         
 
 	<!---------- End form ----------------->
-
 
       </div>
       <div class="modal-footer">
@@ -108,7 +105,13 @@
     </div>
   </div>
 </div>
-</form>
+ </form>
+{% endblock %}
+
+{% block javascript %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='users.js') }}"></script>
+
 {% endblock %}
 
 

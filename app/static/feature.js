@@ -3,11 +3,19 @@ var old_global_priority =[]
 function Client(data) {
     
     this.id = data.id;
-    this.company_name = data.company_name;
+    this.company_name = ko.observable(data.company_name);
     this.email = ko.observable(data.email);
     this.last_name = ko.observable(data.last_name);
     this.first_name = ko.observable(data.first_name);
 }
+
+function Product(data) {
+    
+    this.id = data.id;
+    this.product_name = ko.observable(data.product_name);
+    this.description = ko.observable(data.description);
+}
+
 
 
 function Feature(data,self) {
@@ -19,8 +27,10 @@ function Feature(data,self) {
     this.client_priority = ko.observable(data.client_priority);
     this.global_priority = ko.observable(data.global_priority);
     this.client_id = ko.observable(data.client_id);
-    this.client_name = ko.observable();
+    
+    this.company_name = ko.observable(GetClient(data.client_id,self).company_name());
     this.product_id = ko.observable();
+    this.product_name = ko.observable(GetProduct(data.product_id,self).product_name());
    
 }
 
@@ -53,9 +63,10 @@ function save_priority(id,priority, global_priority){
 
 Feature.prototype.clone = function() {
 
-    var  data = {"id":this.id, "title":this.title(), "email":this.email(), "global_priority":this.global_priority(), "client_priority":this.client_priority(),
-                  "description":this.description(),"client_name":this.client_name(),"client_id":this.client_id(),
-                  "target_date":this.target_date(),"ticket_url":this.ticket_url()};
+    var  data = {"id":this.id, "title":this.title(), "email":this.email(), "global_priority":this.global_priority(), 
+                 "client_priority":this.client_priority(),
+                 "description":this.description(),"client_name":this.client_name(),"client_id":this.client_id(),
+                 "target_date":this.target_date(),"ticket_url":this.ticket_url()};
     return new Feature(data);
 };
 
@@ -73,11 +84,25 @@ function GetClient(id,self){
     return client;
 }
 
+function GetProduct(id,self){
+    var product;
+
+    ko.utils.arrayForEach(self.products(), function(c) {
+        if(c.id == id){
+	    
+            product= c;
+	}
+    });
+  
+    return product;
+}
+
 function FeatureListViewModel() {
 
 
     var self = this;
     self.clients = ko.observableArray([]);
+    self.products = ko.observableArray([]);
 
     $.getJSON('/clients_list', function(clientModels) {
 	var t = $.map(clientModels.clients, function(item) {
@@ -87,7 +112,13 @@ function FeatureListViewModel() {
 	self.clients(t);
     });
 
-
+    $.getJSON('/products_list', function(productsModels) {
+	var t = $.map(productsModels.products, function(item) {
+	    return new Product(item);
+	});
+	
+	self.products(t);
+    });
 
     self.features = ko.observableArray([]);
 
@@ -97,8 +128,8 @@ function FeatureListViewModel() {
     self.newTicketUrl = ko.observable();
     self.newClientPriority = ko.observable();
     self.newClient = ko.observable();
+    self.newProduct = ko.observable();
     
-
     self.addFeature = function() {
 	self.save();
 	self.newTitle("");
@@ -107,6 +138,7 @@ function FeatureListViewModel() {
 	self.newTicketUrl("");
 	self.newClientPriority("");
 	self.newClient("");
+	 self.newProduct("");
     };
 
     $.getJSON('/features_list', function(featureModels) {
@@ -128,7 +160,15 @@ function FeatureListViewModel() {
     });
 
     self.save = function() {
-
+	var rol = $("#role_user").val();
+	var client_id = "0";
+	
+	if(rol =="3")
+		client_id = $("#current_user_id").val();
+	else
+		client_id = self.newClient().id;
+		
+		
 	return $.ajax({
 	    url: '/new_feature',
 	    contentType: 'application/json',
@@ -137,14 +177,15 @@ function FeatureListViewModel() {
 		'title': self.newTitle(),
 		'target_date': self.newTargetDate(),
 		'ticket_url': self.newTicketUrl(),
-		'client_id': self.newClient().id,
-		'client_priority': self.newClientPriority(),
-		'description': self.newDesc()
+		'client_id': client_id,
+		
+		'description': self.newDesc(),
+		'product_id': self.newProduct().id
 	    }),
 	    success: function(data) {
 		console.log("Pushing to feature array");
-		self.clients.push(new Client({ title: data.title, target_date: data.target_date, 
-			description: data.description,ticket_url: data.ticket_url,client_priority: data.client_priority,client_id: data.client_id, id: data.id}));
+		self.features.push(new Feature(data,self));
+		old_global_priority.push(data.global_priority);
 		$('#new_feature').modal('hide')
 		return;
 	    },
@@ -162,14 +203,9 @@ function FeatureListViewModel() {
     	
 	 ko.utils.arrayForEach(self.features(), function(c) {
 	 	priority = priority+1;
-        	/////////////
-        	
-        	//c.global_priority(priority);
         	save_priority(c.id(),priority,old_global_priority[index]);
-        
         	index++;
         	
-        	///////////:
     	});
     	
     	$.getJSON('/features_list', function(featureModels) {
@@ -183,10 +219,8 @@ function FeatureListViewModel() {
 		//table of old global priorities
 	    	ko.utils.arrayForEach(self.features(), function(c) {
 		 	
-	
 			old_global_priority.push(c.global_priority());
 		
-			///////////:
 	    	});
 	    });
 	
@@ -205,11 +239,16 @@ function FeatureListViewModel() {
 		if (data.name() === "") {
 			self.features.remove(data);
 		}
+		
 	};
 	
 	self.isTaskSelected = function(task) {
 		return task === self.selectedTask();
 	};
+	
+	this.updateLastAction = function(arg) {
+		self.savePriorities();
+	}
 }
 
  //control visibility, give element focus, and select the contents (in order)
@@ -224,4 +263,7 @@ function FeatureListViewModel() {
             }
         };
         
-ko.applyBindings(new FeatureListViewModel());
+var fm = new FeatureListViewModel();
+        
+ko.bindingHandlers.sortable.afterMove = fm.updateLastAction;      
+ko.applyBindings(fm);

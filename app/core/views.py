@@ -9,6 +9,8 @@ from flask_user import current_user, login_required, roles_accepted, roles_requi
 from app import app, db
 from app.core.models import UserProfileForm, FeatureRequest, User, Product, UsersRoles, Role
 from flask_wtf import csrf
+from datetime import datetime
+from sqlalchemy import func
 
 core_blueprint = Blueprint('core', __name__, url_prefix='/')
 
@@ -77,7 +79,73 @@ def feature_request():
                            
                            
                            
+@app.route('/new_feature', methods=['POST'])
+def new_feature():
+    if current_user.roles[0].name == 'client':
+        #If feature added by client
+        
+        #get the count of FR gp : global priority
+       
+        gp = db.session.query(func.count(FeatureRequest.id)).scalar()  
+        #by default the priority will be in the end      
+        gp = gp +1                                    
+         
+        #get the count of FR cp : client priority
+        cp = db.session.query(func.count(FeatureRequest.id)).filter(FeatureRequest.user_id == current_user.id).scalar()        
+        #by default the priority will be in the end
+        cp = cp +1                                     
+        date_object = datetime.strptime(request.json['target_date'], '%m-%d-%Y')
+        feature = FeatureRequest(title=request.json['title'],description=request.json['description'],
+                                 target_date=date_object,ticket_url=request.json['ticket_url'],
+                                 user_id=current_user.id,product_id=request.json['product_id'],
+                                 global_priority=gp,client_priority=cp)
 
+        db.session.add(feature)
+        db.session.commit()
+        #id = cur.lastrowid
+        return jsonify({"title": request.json['title'], 
+                    "description": request.json['description'],
+                    "client_priority": cp,
+                    "global_priority": gp,
+                    "target_date": request.json['target_date'],
+                    "ticket_url": request.json['ticket_url'],
+                    "client_id": request.json['client_id'],
+                    "id": feature.id,
+                    "product_id": request.json['product_id']})
+    else:
+        #If feature added by IWS USER
+        
+        #get the count of FR gp : global priority
+        gp = db.session.query(func.count(FeatureRequest.id)).scalar()
+        #by default the priority will be in the end       
+        gp = gp +1                                     
+        
+        #get the count of FR cp : client priority
+        cp = db.session.query(func.count(FeatureRequest.id)).filter(FeatureRequest.user_id == request.json['client_id']).scalar()        
+        
+        
+        cp = cp + 1                                     
+        date_object = datetime.strptime(request.json['target_date'], '%m-%d-%Y')
+        feature = FeatureRequest(title=request.json['title'],description=request.json['description'],
+                                 target_date=date_object,ticket_url=request.json['ticket_url'],
+                                 user_id=request.json['client_id'],product_id=request.json['product_id'],
+                                 global_priority=gp,client_priority=cp)
+
+        db.session.add(feature)
+        db.session.commit()
+        #id = cur.lastrowid
+        return jsonify({"title": request.json['title'], 
+                    "description": request.json['description'],
+                    "client_priority": cp,
+                    "global_priority": gp,
+                    "target_date": request.json['target_date'],
+                    "ticket_url": request.json['ticket_url'],
+                    "client_id": request.json['client_id'],
+                    "id": feature.id,
+                    "product_id": request.json['product_id']})
+    
+                    
+                    
 @app.route('/save_priorities', methods=['POST'])
 def save_priorities():
     if current_user.roles[0].name == 'client':
@@ -130,6 +198,8 @@ def clients():
                        clients=clients)
 
 @app.route('/clients_list')
+@roles_required('admin')
+@login_required
 def clients_list():
 
     cur =  User.query.join(User.roles).filter(Role.name == 'client').group_by(User).order_by(User.id).all()
@@ -137,7 +207,35 @@ def clients_list():
     description="",id=row.id,last_name=row.last_name, first_name=row.first_name,priority=row.priority) for row in cur]
     return jsonify(clients=entries)
     
-    
+@app.route('/new_client', methods=['POST'])
+@roles_required('admin')
+@login_required
+def new_client():
+    email = request.json['email']
+    user = User.query.filter(User.email==email).first()
+    if not user:
+        user =  User(email=email, first_name=request.json['first_name'], last_name=request.json['last_name'],
+                     password = app.user_manager.hash_password(request.json['password']), 
+                     company_name=request.json['company_name'],  active=True,confirmed_at=datetime.utcnow())
+                     
+        role = Role.query.filter(Role.name == 'client').first()
+        user.roles.append(role)
+        db.session.add(user)
+        db.session.commit()
+        return jsonify({"email": request.json['email'], 
+                    "first_name": request.json['first_name'],
+                    "result": "OK",
+                    "last_name": request.json['last_name'],
+                    "company_name": request.json['company_name'],
+                   })
+
+
+    else:
+        return jsonify({"result":"Error","msg":"email exist"})
+
+
+
+
 # Product Route
 @app.route('/products')
 @roles_required('admin')
@@ -147,7 +245,15 @@ def products():
     products = Product.query.all()
     return render_template('core/products.html',
                        products=products)
-  
+
+@app.route('/products_list')
+def products_list():
+
+    cur =  Product.query.all()
+    entries = [dict(id=row.id,product_name=row.product_name, description=row.description) for row in cur]
+    return jsonify(products=entries)
+    
+    
 # User Route
 @app.route('/users')
 @roles_required('admin')
@@ -157,4 +263,43 @@ def users():
     users = User.query.join(User.roles).filter(Role.name == 'user').group_by(User).all()
     return render_template('core/users.html',
                        users=users)
+
+
+@app.route('/users_list')
+@roles_required('admin')
+@login_required
+def users_list():
+
+    cur =  User.query.join(User.roles).filter(Role.name == 'user').group_by(User).order_by(User.id).all()
+    entries = [dict(email=row.email, id=row.id,last_name=row.last_name, first_name=row.first_name) for row in cur]
+    return jsonify(users=entries)
+    
+@app.route('/new_user', methods=['POST'])
+@roles_required('admin')
+@login_required
+def new_user():
+    email = request.json['email']
+    user = User.query.filter(User.email==email).first()
+    if not user:
+        user =  User(email=email, first_name=request.json['first_name'], last_name=request.json['last_name'],
+                     password = app.user_manager.hash_password(request.json['password']), 
+                     active=True,confirmed_at=datetime.utcnow())
+                     
+        role = Role.query.filter(Role.name == 'user').first()
+        user.roles.append(role)
+        db.session.add(user)
+        db.session.commit()
+        return jsonify({"email": request.json['email'], 
+                    "first_name": request.json['first_name'],
+                    "result": "OK",
+                    "last_name": request.json['last_name'],
+                    "id": user.id
+                   })
+
+
+    else:
+        return jsonify({"result":"Error","msg":"email exist"})
+
+
+
   

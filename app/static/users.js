@@ -1,12 +1,12 @@
 
-function Client(data) {
+function User(data) {
     this.id = ko.observable(data.id);
-    this.company_name = ko.observable(data.company_name);
+    
     this.last_name = ko.observable(data.last_name);
     this.first_name = ko.observable(data.first_name);
-    this.priority = ko.observable(data.priority);
+    
     this.email = ko.observable(data.email);
-    this.description = ko.observable(data.description);
+    
     
 }
 
@@ -25,38 +25,37 @@ function validatePassword(p) {
     return true;
 }
 
-function ClientListViewModel() {
+function UserListViewModel() {
     var self = this;
-    self.clients = ko.observableArray([]);
-    self.newClientCN = ko.observable();
+    self.users = ko.observableArray([]);
+
     self.newLastName = ko.observable();
     self.newFirstName = ko.observable();
-    self.newClientEmail = ko.observable();
-    self.newPriority = ko.observable();
+    self.newUserEmail = ko.observable();
+
     self.newPassword = ko.observable();
     self.newConfPassword = ko.observable();
     self.error_save=0;
-    self.addClient = function() {
+    self.addUser = function() {
 	   
 		self.save();
 		if(self.error_save==0){
-			self.newClientCN("");
 			self.newLastName("");
 			self.newFirstName("");
-			self.newClientEmail("");
+			self.newUserEmail("");
 			self.newPassword("");
 			self.newConfPassword("");
 		}
        	    
     };
 
-    $.getJSON('/clients_list', function(clientModels) {
-	var t = $.map(clientModels.clients, function(item) {
+    $.getJSON('/users_list', function(userModels) {
+	var t = $.map(userModels.users, function(item) {
 		
-	    return new Client(item);
+	    return new User(item);
 	});
 	
-	self.clients(t);
+	self.users(t);
     });
 
     self.save = function() {
@@ -75,12 +74,12 @@ function ClientListViewModel() {
         
         self.error_save=0;
 	return $.ajax({
-	    url: '/new_client',
+	    url: '/new_user',
 	    contentType: 'application/json',
 	    type: 'POST',
 	    data: JSON.stringify({
-		'company_name': self.newClientCN(),
-		'email': self.newClientEmail(),
+
+		'email': self.newUserEmail(),
 		
 		'first_name': self.newFirstName(),
 		'last_name': self.newLastName(),
@@ -88,12 +87,12 @@ function ClientListViewModel() {
 	    }),
 	    success: function(data) {
 	    	if(data.result=="OK"){
-			console.log("Pushing to clients array");
-			self.clients.push(new Client(data));
-			$('#new_client').modal('hide')
+			console.log("Pushing to users array");
+			self.users.push(new User(data));
+			$('#new_user').modal('hide')
 			return;
 		}else{
-			$('#new_client').modal('hide')
+			$('#new_user').modal('hide')
 			alert(data.msg);
 			return;
 		}
@@ -105,4 +104,4 @@ function ClientListViewModel() {
     };
 }
 
-ko.applyBindings(new ClientListViewModel());
+ko.applyBindings(new UserListViewModel());

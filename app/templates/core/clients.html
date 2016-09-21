@@ -22,7 +22,7 @@
 								  <th>Last Name</th>
 								  <th>Company Name</th>
 								  <th>Email</th>
-								  <th>Client priority</th>
+								  
 								  
 								  <th>Action</th>
 							  </tr>
@@ -35,7 +35,7 @@
 								  <td data-bind="text: first_name">{# {fr.first_name} #}</td>
 								  <td data-bind="text: company_name">{# {fr.company_name} #}</td>
 								  <td data-bind="text: email">{# {fr.email} #}</td>
-								  <td data-bind="text: priority">{# {fr.priority} #}</td>
+								  
 								  
 								  <td>--</td>
 
@@ -78,7 +78,8 @@
               </div>
               <div class="form-group">
                   <label for="companyNameText">Company Name</label>
-                  <input type="text" data-bind="value: newClientCN" class="form-control" id="companyNameText" aria-describedby="companyNameHelp" placeholder="Enter company name">
+                  <input type="text" data-bind="value: newClientCN" class="form-control" id="companyNameText" 
+                  aria-describedby="companyNameHelp" placeholder="Enter company name">
                   <small id="companyNameHelp" class="form-text text-muted">Enter the name of company.</small>
               </div>
 	      <div class="form-group">
@@ -89,14 +90,17 @@
                
               
               <div class="form-group">
-                  <label for="prioritySelect">Priority</label>
-                  <select class="form-control" id="prioritySelect">
-                      <option>1</option>
-                      <option>2</option>
-                      <option>3</option>
-                      <option>4</option>
-                      <option>5</option>
-                  </select>
+                  <label for="passwordText">Password</label>
+                  <input type="password" data-bind="value: newPassword" class="form-control" id="passwordText" 
+                  aria-describedby="passwordHelp" placeholder="Enter Password">
+                  <small id="passwordHelp" class="form-text text-muted">Enter Password(8 caracters, use at least one Upercase and one number).</small>
+              </div>
+              
+              <div class="form-group">
+                  <label for="confPasswordText">Confirm Password</label>
+                  <input type="password" data-bind="value: newConfPassword" class="form-control" id="confPasswordText" 
+                  aria-describedby="confPasswordHelp" placeholder="Enter Password Confirmation">
+                  <small id="confPasswordHelp" class="form-text text-muted">Enter Password Confirmation.</small>
               </div>
              
               

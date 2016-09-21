@@ -20,9 +20,9 @@
 				<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#new_feature" id="new_feature_b">
 					Add
 				</button>
-				<button type="button" data-bind="click: savePriorities" class="btn btn-primary" data-toggle="modal"  id="save_priorites_b">
+				<!--button type="button" data-bind="click: savePriorities" class="btn btn-primary" data-toggle="modal"  id="save_priorites_b">
 					Save priorites
-				</button><br>
+				</button><br-->
 			</div>
 			<div class="row placeholders">
 				<div class="table-responsive">
@@ -48,6 +48,7 @@
 								  <th>Title</th>
 								  
 								  <th>Client Name</th>
+								  <th>product Name</th>
 								  <th>Global priority</th>
 								  
 								  <th>Client Priority</th>
@@ -59,7 +60,8 @@
 							  <tr class="item">
 								  <th data-bind="text: id">{#{fr.id}#}</th>
 								  <td data-bind="text: title">{#{fr.title}#}</td>
-								  <td data-bind="text: description">{#{fr.description}#}</td>
+								  <td data-bind="text: company_name">{#{fr.description}#}</td>
+								  <td data-bind="text: product_name">{#{fr.description}#}</td>
 								  <td data-bind="text: global_priority">{#{fr.user_id}#}</td>
 								  <td data-bind="text: client_priority">{#{fr.priority}#}</td>
 								  
@@ -102,21 +104,26 @@
                   <textarea class="form-control" data-bind="value: newDesc" id="descriptionText" rows="3"></textarea>
               </div>
               
+              {% if current_user.roles[0].name=='client' %}
+              		<input type="hidden" id="current_user_id" value="{{current_user.id}}">
+              		<input type="hidden" id="role_user" value="3">
+              
+              {% else %}
+              		<div class="form-group">
+				  <label for="cilentSelect">Client</label>
+
+				  <select class="form-control" id="cilentSelect" data-bind="options: $root.clients, value: newClient, optionsText: 'company_name'">
+				  </select>
+              		</div>
+              		<input type="hidden" id="role_user" value="1">
+              
+              {% endif %}
+              
               
               <div class="form-group">
-                  <label for="cilentSelect">Client</label>
-
-                  <select class="form-control" id="cilentSelect" data-bind="options: $root.clients, value: newClient, optionsText: 'company_name'">
-                  </select>
-              </div>
-              <div class="form-group">
-                  <label for="targetDateText">Client Priority</label>
-                  <input type="number" class="form-control" data-bind="value: newClientPriority" id="targetDateText" aria-describedby="targetDateHelp" placeholder="Enter target Date">
-                  <small id="targetDateHelp" class="form-text text-muted">Enter the target Date.</small>
-              </div>
-              <div class="form-group">
                   <label for="targetDateText">Target Date</label>
-                  <input type="date" class="form-control" data-bind="value: newTargetDate" id="targetDateText" aria-describedby="targetDateHelp" placeholder="Enter target Date" data-provide="datepicker">
+                  <input type="date" class="form-control" data-bind="value: newTargetDate" id="targetDateText" 
+                  aria-describedby="targetDateHelp" placeholder="Enter target Date" data-provide="datepicker">
                   <small id="targetDateHelp" class="form-text text-muted">Enter the target Date.</small>
               </div>
               
@@ -124,21 +131,21 @@
               
               <div class="form-group">
                   <label for="ticketUrlText">Ticket URL</label>
-                  <input type="text" data-bind="value: newTicketUrl" class="form-control" id="ticketUrlText" aria-describedby="tcketUrlHelp" placeholder="Enter ticket URL">
+                 
+                  	<input type="text" data-bind="value: newTicketUrl" class="form-control" id="ticketUrlText" 
+                  	aria-describedby="tcketUrlHelp" placeholder="Enter ticket URL" width="80%">
+                 
+                  
                   <small id="tcketUrlHelp" class="form-text text-muted">Enter the ticket URL.</small>
               </div>
-              <div class="form-group">
-                  <label for="cilentSelect">Product</label>
-                  <select class="form-control" id="cilentSelect">
-                      <option>Policies</option>
-                      <option>Billing</option>
-                      <option>Claims</option>
-                      <option>Reports</option>
-                      
-                  </select>
-              </div>
-             
               
+             
+              <div class="form-group">
+				  <label for="productSelect">Product</label>
+
+				  <select class="form-control" id="productSelect" data-bind="options: $root.products, value: newProduct, optionsText: 'product_name'">
+				  </select>
+              		</div>
           
 
 	<!---------- End form ----------------->
@@ -158,7 +165,19 @@
     {{ super() }}
     <script src="{{ url_for('static', filename='js/knockout-sortable.min.js') }}"></script>
     <script src="{{ url_for('static', filename='feature.js') }}"></script>
-    
+      <script>
+	  $( function() {
+	    $('#targetDateText').prop("disabled","disabled");
+	    $('#targetDateText').prop("disabled", true) 
+	    $( "#targetDateText" ).datepicker({
+	      showOn: "button",
+	      buttonImage: "static/images/calendar.gif",
+	      buttonImageOnly: true,
+	      buttonText: "Select date",
+	      dateFormat: "mm-dd-yy"
+	    });
+	  } );
+  </script>
 
 {% endblock %}
 
