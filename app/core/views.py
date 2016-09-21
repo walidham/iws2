@@ -254,6 +254,34 @@ def products_list():
     return jsonify(products=entries)
     
     
+    
+
+    
+@app.route('/new_product', methods=['POST'])
+@roles_required('admin')
+@login_required
+def new_product():
+    product = Product.query.filter(Product.product_name==request.json['product_name']).first()
+    if not product:
+        product =  Product(product_name=request.json['product_name'], description=request.json['description'])
+        db.session.add(product)
+        db.session.commit()
+        return jsonify({"product_name": request.json['product_name'], 
+            "description": request.json['description'],
+            "id": product.id,
+             "result": "OK"
+           })
+    else:
+        return jsonify({"result":"Error","msg":"product name exist"})
+
+  
+
+
+    
+    
+    
+    
+    
 # User Route
 @app.route('/users')
 @roles_required('admin')

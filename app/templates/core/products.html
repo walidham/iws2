@@ -6,7 +6,7 @@
 		<div class="col-12">
 			<h1>Products</h1>
 			<div class="row">
-			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#new_feature" id="new_feature_b">
+			<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#new_product" id="new_product_b">
 				Add
 			</button>
 			</div>
@@ -22,18 +22,18 @@
 								  <th>Action</th>
 							  </tr>
 						  </thead>
-						  <tbody>
-							{% for fr in products %}
+						  <tbody data-bind="foreach: products">
+							{#% for fr in products %#}
 							  <tr>
-								  <th data-bind="text: id">{{fr.id}}</th>
-								  <td data-bind="text: title">{{fr.product_name}}</td>
-								  <td data-bind="text: description">{{fr.description}}</td>
+								  <th data-bind="text: id">{#{fr.id}#}</th>
+								  <td data-bind="text: product_name">{#{fr.product_name}#}</td>
+								  <td data-bind="text: description">{#{fr.description}#}</td>
 								  
 								  
 								  <td>--</td>
 
 							  </tr>
-							{% endfor %}  
+							{#% endfor %#}  
 						  </tbody>
 					  </table>
 				  </div>
@@ -48,55 +48,29 @@
 
 
 <!-- Dialog form new feature -->
-<form data-bind="submit: addFeature">
-<div class="modal fade" id="new_feature" tabindex="-1" role="dialog" aria-labelledby="newFeatureLabel" aria-hidden="true">
+<form data-bind="submit: addProduct">
+<div class="modal fade" id="new_product" tabindex="-1" role="dialog" aria-labelledby="newProductLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
-        <h4 class="modal-title" id="newFeatureLabel">Create new Client</h4>
+        <h4 class="modal-title" id="newFeatureLabel">Create new Product</h4>
       </div>
       <div class="modal-body">
         <!---------------------------------------------->
 	
               <div class="form-group">
-                  <label for="firstNameText">First name</label>
-                  <input type="text" data-bind="value: newTitle" class="form-control" id="firstNameText" aria-describedby="firstNameHelp" placeholder="Enter first name">
-                  <small id="firstNameHelp" class="form-text text-muted">Enter the first name.</small>
+                  <label for="firstNameText">Product name</label>
+                  <input type="text" data-bind="value: newProductName" class="form-control" id="firstNameText" 
+                  aria-describedby="firstNameHelp" placeholder="Enter first name">
+                  <small id="firstNameHelp" class="form-text text-muted">Enter Product name.</small>
               </div>
-               <div class="form-group">
-                  <label for="lastNameText">Last name</label>
-                  <input type="text" data-bind="value: newTitle" class="form-control" id="lastNameText" aria-describedby="lastNameHelp" placeholder="Enter last name">
+                <div class="form-group">
+                  <label for="descriptionText">Description</label>
+                  <textarea data-bind="value: newProductDesc" class="form-control" id="descriptionText" rows="3"></textarea>
               </div>
-              </div>
-               <div class="form-group">
-                  <label for="emailText">Email</label>
-                  <input type="email" data-bind="value: newTitle" class="form-control" id="emailText" aria-describedby="emailHelp" placeholder="Enter Email">
-              </div>
-              
-              
-              <div class="form-group">
-                  <label for="targetDateText">Client Priority</label>
-                  <input type="number" class="form-control" data-bind="value: newClientPriority" id="targetDateText" aria-describedby="targetDateHelp" placeholder="Enter target Date">
-                  <small id="targetDateHelp" class="form-text text-muted">Enter the priority.</small>
-              </div>
-              
-              
-              
-              
-              <div class="form-group">
-                  <label for="ticketUrlText">Password</label>
-                  <input type="password" data-bind="value: newTicketUrl" class="form-control" id="ticketUrlText" aria-describedby="tcketUrlHelp" placeholder="Enter password">
-                  <small id="tcketUrlHelp" class="form-text text-muted">Enter the password.</small>
-              </div>
-              <div class="form-group">
-                  <label for="ticketUrlText">Confirm Password</label>
-                  <input type="password" data-bind="value: newTicketUrl" class="form-control" id="ticketUrlText" aria-describedby="tcketUrlHelp" placeholder="Enter confirmation">
-                  <small id="tcketUrlHelp" class="form-text text-muted">Enter the password confirmation.</small>
-              </div>
-             
               
           
 
@@ -112,5 +86,12 @@
 </div>
 </form>
 {% endblock %}
+
+{% block javascript %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='product.js') }}"></script>
+
+{% endblock %}
+
 
 

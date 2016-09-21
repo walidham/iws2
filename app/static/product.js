@@ -16,7 +16,7 @@ function ProductListViewModel() {
         self.newProductDesc("");
     };
 
-    $.getJSON('/admin/products_list', function(productModels) {
+    $.getJSON('/products_list', function(productModels) {
 	var t = $.map(productModels.products, function(item) {
 	    return new Product(item);
 	});
@@ -26,7 +26,7 @@ function ProductListViewModel() {
     self.save = function() {
 
 	return $.ajax({
-	    url: '/admin/new_product',
+	    url: '/new_product',
 	    contentType: 'application/json',
 	    type: 'POST',
 	    data: JSON.stringify({
@@ -35,9 +35,15 @@ function ProductListViewModel() {
 	    }),
 	    success: function(data) {
 		console.log("Pushing to products array");
-		self.products.push(new Product({ product_name: data.product_name, description: data.description, id: data.id}));
-		$('#new_product').modal('hide')
-		return;
+		self.products.push(new Product(data));
+		if(data.result=="OK"){
+			$('#new_product').modal('hide')
+			return;
+		}else{
+			alert(data.msg);
+			return;
+		}
+		
 	    },
 	    error: function(e) {
 		return console.log("Failed"+e);
