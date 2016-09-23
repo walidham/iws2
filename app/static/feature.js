@@ -28,8 +28,8 @@ function Feature(data,self) {
     this.global_priority = ko.observable(data.global_priority);
     this.client_id = ko.observable(data.client_id);
     this.product = ko.observable(GetProduct(data.product_id,self));
-    
-    this.company_name = ko.observable(this.product().product_name());
+    this.client =  ko.observable(GetClient(data.client_id,self));
+    this.company_name = ko.observable(this.client().company_name());
     
     this.product_id = ko.observable(this.product().id);
     
