@@ -27,10 +27,26 @@ function Feature(data,self) {
     this.client_priority = ko.observable(data.client_priority);
     this.global_priority = ko.observable(data.global_priority);
     this.client_id = ko.observable(data.client_id);
+    this.product = ko.observable(GetProduct(data.product_id,self));
     
-    this.company_name = ko.observable(GetClient(data.client_id,self).company_name());
-    this.product_id = ko.observable();
+    this.company_name = ko.observable(this.product().product_name());
+    
+    this.product_id = ko.observable(this.product().id);
+    
     this.product_name = ko.observable(GetProduct(data.product_id,self).product_name());
+    
+    this.target_date = ko.computed(function(){
+    			   var target_date = new Date(data.target_date);
+			   var year = target_date.getFullYear().toString();
+			   var month = (target_date.getMonth() + 1).toString();
+			   var day   = target_date.getDay().toString();
+			   var pad = "00";
+
+			   return month + '-' +
+			    + day + '-' +
+			     year;
+
+			});
    
 }
 
@@ -60,6 +76,62 @@ function save_priority(id,priority, global_priority){
 
 
 }
+
+function updateFeature(data){
+
+    return $.ajax({
+		    url: '/update_feature',
+		    contentType: 'application/json',
+		    type: 'POST',
+		    data: JSON.stringify({
+			'id': ""+data.id(),
+			'title': ""+data.title(),
+			'target_date': ""+data.target_date(),
+			'ticket_url': ""+data.ticket_url(),
+			'product_id': ""+data.product().id,
+
+			
+		    }),
+		    success: function(data) {
+			console.log("Save feature");
+			return true;
+			
+		    },
+		    error: function(e) {
+			console.log("Failed"+e);
+			return false;
+		    }
+		});
+
+
+
+}
+
+function delete_Feature(id){
+
+    return $.ajax({
+		    url: '/delete_feature',
+		    contentType: 'application/json',
+		    type: 'POST',
+		    data: JSON.stringify({
+			'id': ""+id,
+			
+		    }),
+		    success: function(data) {
+			console.log("Save feature");
+			return true;
+			
+		    },
+		    error: function(e) {
+			console.log("Failed"+e);
+			return false;
+		    }
+		});
+
+
+
+}
+
 
 Feature.prototype.clone = function() {
 
@@ -125,6 +197,8 @@ function FeatureListViewModel() {
     self.newTitle = ko.observable();
     self.newDesc = ko.observable();
     self.newTargetDate = ko.observable();
+    
+    
     self.newTicketUrl = ko.observable();
     self.newClientPriority = ko.observable();
     self.newClient = ko.observable();
@@ -138,9 +212,11 @@ function FeatureListViewModel() {
 	self.newTicketUrl("");
 	self.newClientPriority("");
 	self.newClient("");
-	 self.newProduct("");
+	self.newProduct("");
     };
 
+    
+    
     $.getJSON('/features_list', function(featureModels) {
    
 	var t = $.map(featureModels.features, function(item) {
@@ -225,29 +301,121 @@ function FeatureListViewModel() {
 	    });
 	
     };
-	// New code
-	self.allowNewTask = ko.computed(function() {
-		return self.features().length < 100;
-	});
+	// Set feature editable
 	
-	self.selectedTask = ko.observable();
+	self.selected_fr=null;
+	//Title
+	self.selectedTitle = ko.observable();
 	
-	self.clearTask = function(data, event) {
-		if (data === self.selectedTask()) {
-			self.selectedTask(null);
+	self.clearTitle = function(data, event) {
+		if (data === self.selectedTitle()) {
+			self.selectedTitle(null);
 		}
-		if (data.name() === "") {
-			self.features.remove(data);
+		if (data.title() === "") {
+ 			alert("Title can't be empty");
+			data.title(self.selected_fr.title());
+			return;
 		}
+		self.update_Feature(data);
 		
 	};
 	
-	self.isTaskSelected = function(task) {
-		return task === self.selectedTask();
+	self.isTitleSelected = function(data) {
+		self.selected_fr = data;
+		return data === self.selectedTitle();
 	};
 	
+	// Target date
+	self.selectedTargetDate = ko.observable();
+	
+	self.clearTargetDate = function(data, event) {
+		if (data === self.selectedTargetDate()) {
+			self.selectedTargetDate(null);
+		}
+		if (data.target_date() === "") {
+ 			alert("Target Date can't be empty");
+			data.target_date(self.selected_fr.target_date());
+			return;
+		}
+		self.update_Feature(data);
+		
+	};
+	
+	self.isTargetDateSelected = function(data) {
+		self.selected_fr = data;
+		return data === self.selectedTargetDate();
+	};
+	
+	// Product
+	self.selectedProduct = ko.observable();
+	
+	self.clearProduct = function(data, event) {
+		if (data === self.selectedProduct()) {
+			self.selectedProduct(null);
+		}
+		data.product_name(data.product().product_name());
+		self.update_Feature(data);
+		
+		
+	};
+	
+	self.isProductSelected = function(data) {
+		
+		return data === self.selectedProduct();
+	};
+	//Ticket URL
+	self.selectedTicketUrl = ko.observable();
+	
+	self.clearTicketUrl = function(data, event) {
+		if (data === self.selectedTicketUrl()) {
+			self.selectedTicketUrl(null);
+		}
+		if (data.ticket_url() === "") {
+ 			alert("Ticket Url can't be empty");
+			data.ticket_url(self.selected_fr.ticket_url());
+			return;
+		}
+		self.update_Feature(data);
+		
+	};
+	
+	self.isTicketUrlSelected = function(data) {
+		self.selected_fr = data;
+		return data === self.selectedTicketUrl();
+	};
+	
+	
+	
+	
+	self.update_Feature = function(data) {
+		return  updateFeature(data);
+	};
+	
+	//Save change after sort table
 	this.updateLastAction = function(arg) {
 		self.savePriorities();
+	}
+	
+	//Delete feature
+	self.deleteFeature = function(data){
+	
+		    $( "#dialog-confirm" ).dialog({
+		      resizable: false,
+		      height: "auto",
+		      width: 400,
+		      modal: true,
+		      buttons: {
+			"Delete Feature": function() {
+			  delete_Feature(data.id());
+			  self.features.remove(data);
+			  $( this ).dialog( "close" );
+			},
+			Cancel: function() {
+			  $( this ).dialog( "close" );
+			}
+		      }
+		    });
+		  
 	}
 }
 

@@ -174,6 +174,39 @@ def save_priorities():
         #db.session.commit()
         return jsonify(reponse=dict(result="ok"))
 
+
+@app.route('/update_feature', methods=['POST'])
+@login_required
+def update_feature():
+    id_feature = request.json['id']
+    date_object = datetime.strptime(request.json['target_date'], '%m-%d-%Y')
+        
+    fr = FeatureRequest.query.filter_by(id=id_feature).first()
+    if fr:
+        fr.title = request.json['title']
+        fr.ticket_url = request.json['ticket_url']
+        fr.target_date = date_object
+        fr.product_id = request.json['product_id']
+        #db.session.query(FeatureRequest).filter_by(id = id_feature).update({'global_priority': int(priority)})
+        db.session.commit()
+        return jsonify(reponse=dict(result="ok"))
+    else:
+        return jsonify(reponse=dict(result="error"))
+
+@app.route('/delete_feature', methods=['POST'])
+@login_required
+def delete_feature():
+    id_feature = request.json['id']
+    
+        
+    fr = FeatureRequest.query.filter_by(id=id_feature).first()
+    if fr:
+        FeatureRequest.query.filter_by(id=id_feature).delete()
+        db.session.commit()
+        return jsonify(reponse=dict(result="ok"))
+    else:
+        return jsonify(reponse=dict(result="error"))
+        
 @app.route('/features_list')
 @login_required
 def features_list():

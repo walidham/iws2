@@ -52,6 +52,8 @@
 								  <th>Global priority</th>
 								  
 								  <th>Client Priority</th>
+								  <th>Ticket URL</th>
+								  <th>Target Date</th>
 								  <th>Action</th>
 							  </tr>
 						  </thead >
@@ -59,14 +61,56 @@
 							{#% for fr in features %#}
 							  <tr class="item">
 								  <th data-bind="text: id">{#{fr.id}#}</th>
-								  <td data-bind="text: title">{#{fr.title}#}</td>
+								  <td>
+								  
+								  	<span data-bind="visible: !$root.isTitleSelected($data)">
+									    <a href="#" data-bind="text: title, click: $root.selectedTitle" 
+									    title="click to change texte" ></a>
+									</span>
+									<span data-bind="visibleAndSelect: $root.isTitleSelected($data)">
+									    <input data-bind="value: title, event: { blur: $root.clearTitle }" />
+									</span>
+									{#{fr.title}#}
+								  </td>
 								  <td data-bind="text: company_name">{#{fr.description}#}</td>
-								  <td data-bind="text: product_name">{#{fr.description}#}</td>
+								  <td>
+								  	<span data-bind="visible: !$root.isProductSelected($data)">
+									    <a href="#" data-bind="text: product_name, click: $root.selectedProduct" 
+									    title="click to change texte" ></a>
+									</span>
+									<span data-bind="visibleAndSelect: $root.isProductSelected($data)">
+									    <select data-bind="options: $root.products, event: { blur: $root.clearProduct}, value:  product, optionsText: 'product_name'" />
+									</span>
+								  {#{fr.description}#}
+								  
+								  </td>
 								  <td data-bind="text: global_priority">{#{fr.user_id}#}</td>
 								  <td data-bind="text: client_priority">{#{fr.priority}#}</td>
+								  <td>
+								  	<span data-bind="visible: !$root.isTicketUrlSelected($data)">
+									    <a href="#" data-bind="text: ticket_url, click: $root.selectedTicketUrl" 
+									    title="click to change texte" ></a>
+									</span>
+									<span data-bind="visibleAndSelect: $root.isTicketUrlSelected($data)">
+									    <input data-bind="value: ticket_url, event: { blur: $root.clearTicketUrl }" />
+									</span>
+								  	{#{fr.priority}#}
+								  </td>
+								  	
+								  <td>
+								  	<span data-bind="visible: !$root.isTargetDateSelected($data)">
+									    <a href="#" data-bind="text: target_date, click: $root.selectedTargetDate" 
+									    title="click to change text" ></a>
+									</span>
+									<span data-bind="visibleAndSelect: $root.isTargetDateSelected($data)">
+									    <input data-bind="value: target_date, event: { blur: $root.clearTargetDate }" 
+									    class="dateInput"/>
+									</span>
+								  {#{fr.priority}#}
+								  </td>
 								  
-								  
-								  <td>--</td>
+								  <td><a href="#"  data-bind="click:  $root.deleteFeature" 
+								  class="btn btn-primary">Delete</a></td>
 
 							  </tr>
 							{#% endfor %#}  
@@ -159,6 +203,11 @@
   </div>
 </div>
 </form>
+
+<div id="dialog-confirm" title="Delete Feature?">
+  <p><span class="ui-icon ui-icon-alert" style="float:left; margin:12px 12px 20px 0;"></span>
+  The Feature will be deleted!. Are you sure?</p>
+</div>
 {% endblock %}
 
 {% block javascript %}
@@ -167,6 +216,15 @@
     <script src="{{ url_for('static', filename='feature.js') }}"></script>
       <script>
 	  $( function() {
+	  
+	   // $('.dateInput').prop("disabled","disabled");
+	   // $('.dateInput').prop("disabled", true) 
+	    $( ".dateInput" ).datepicker({
+	      showOn: "button",
+	      buttonText: "Select date",
+	      dateFormat: "mm-dd-yy"
+	    });
+	  
 	    $('#targetDateText').prop("disabled","disabled");
 	    $('#targetDateText').prop("disabled", true) 
 	    $( "#targetDateText" ).datepicker({
