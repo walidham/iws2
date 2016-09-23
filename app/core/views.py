@@ -80,6 +80,7 @@ def feature_request():
                            
                            
 @app.route('/new_feature', methods=['POST'])
+@login_required
 def new_feature():
     if current_user.roles[0].name == 'client':
         #If feature added by client
@@ -147,6 +148,7 @@ def new_feature():
                     
                     
 @app.route('/save_priorities', methods=['POST'])
+@login_required
 def save_priorities():
     if current_user.roles[0].name == 'client':
         id_feature = request.json['id']
@@ -173,6 +175,7 @@ def save_priorities():
         return jsonify(reponse=dict(result="ok"))
 
 @app.route('/features_list')
+@login_required
 def features_list():
     if current_user.roles[0].name == 'client':
         cur =  FeatureRequest.query.filter(FeatureRequest.user_id == current_user.id).order_by(FeatureRequest.client_priority)
@@ -198,7 +201,6 @@ def clients():
                        clients=clients)
 
 @app.route('/clients_list')
-@roles_required('admin')
 @login_required
 def clients_list():
 
@@ -247,6 +249,7 @@ def products():
                        products=products)
 
 @app.route('/products_list')
+@login_required
 def products_list():
 
     cur =  Product.query.all()
