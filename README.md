@@ -128,3 +128,6 @@ You can make use of the following users:
 
     source ~/.bashrc
 
+## Contact
+* Email : walid.ham@hotmail.com
+
