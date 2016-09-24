@@ -158,20 +158,18 @@ def save_priorities():
         fr = FeatureRequest.query.filter_by(id=id_feature).first()
         fr.global_priority = global_pri
         fr.client_priority = client_priority
-        #db.session.query(FeatureRequest).filter_by(id = id_feature).update({'global_priority': int(priority)})
         db.session.commit()
         return jsonify(reponse=dict(result="ok"))
     else:
         id_feature = request.json['id']
-        priority = request.json['priority']
+        client_priority = request.json['priority']
+        global_pri = request.json['global_priority']
       
         fr = FeatureRequest.query.filter_by(id=id_feature).first()
-        fr.global_priority = priority
+        fr.global_priority = global_pri
+        fr.client_priority = client_priority
         
-        #db.session.query(FeatureRequest).filter_by(id = id_feature).update({'global_priority': int(priority)})
         db.session.commit()
-        #FeatureRequest.query.filter(FeatureRequest.id == id_feature).update(dict(global_priority = priority))
-        #db.session.commit()
         return jsonify(reponse=dict(result="ok"))
 
 

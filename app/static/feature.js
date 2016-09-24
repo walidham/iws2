@@ -1,5 +1,32 @@
 var old_global_priority =[]
 
+ 
+/**
+* This associative array will stock the number of FR foreach client
+* It will be used to reorder client priorities
+* Structure : {client_id : total Feature Request }
+* Example client_total_fr{"1" : "2", "2" : "4"} 
+*/
+var client_total_fr=new Object();
+
+
+/**
+* Function add FR to Client
+*
+**/
+function addFRToClient(client_id) {
+
+    if(client_total_fr[client_id] !== undefined) {
+
+        // Client exist, increase the total FR
+        client_total_fr[client_id] = parseInt(client_total_fr[client_id])+1;
+    }else{
+        // Initialize Client total FR
+        client_total_fr[client_id] = 1;
+    }
+
+}
+
 function Client(data) {
     
     this.id = data.id;
@@ -47,6 +74,7 @@ function Feature(data,self) {
 			     year;
 
 			});
+    addFRToClient(this.client_id);
    
 }
 
@@ -218,11 +246,14 @@ function FeatureListViewModel() {
     
     
     $.getJSON('/features_list', function(featureModels) {
-   
+
+   	
+   	 
 	var t = $.map(featureModels.features, function(item) {
 	
 	    return new Feature(item,self);
 	});
+	
 	self.features(t);
 	old_global_priority=[];
 		//table of old global priorities
@@ -276,9 +307,14 @@ function FeatureListViewModel() {
     	
     	var index = 0;
     	
+    	client_total_fr = new Object();
     	
 	 ko.utils.arrayForEach(self.features(), function(c) {
-	 	priority = priority+1;
+	 	
+	 	addFRToClient(c.client_id());
+	 	
+	 	priority = client_total_fr[c.client_id()];
+	 	
         	save_priority(c.id(),priority,old_global_priority[index]);
         	index++;
         	
