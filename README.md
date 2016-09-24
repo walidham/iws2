@@ -17,7 +17,24 @@ This code base serves as a Feature request manager for any company
 * SMTPHandler for error-level log messages -- sends emails on unhandled exceptions
 * Includes `py.test` test framework
 * Includes `alembic` database migration framework
-
+* Knockout.js to load data from database
+* Knockout-sort.js used to re-sort feature request
+* Feature Request panel (for admin, user and client)
+* Admin panel :
+  * Feature Requests list
+  * Clients list
+  * Users list
+  * products list
+  
+## Demo
+* Live Demo : http://python-flask.cloudapp.net:5000/
+* Admin account : admin@example.com / Password1
+* User account : user@example.com / Password1
+* Client :
+  * Client A : clientA@example.com / Password1
+  * Client B : clientB@example.com / Password1
+  * Client C : clientC@example.com / Password1
+    
 
 ## Cloning the code base
 We assume that you have `git` and `virtualenvwrapper` installed.
@@ -25,7 +42,7 @@ We assume that you have `git` and `virtualenvwrapper` installed.
     # Clone the code repository into ~/dev/my_app
     mkdir -p ~/dev
     cd ~/dev
-    git clone https://github.com/lingthio/Flask-User-starter-app.git my_app
+    git clone https://github.com/walidham/iws2.git my_app
 
     # Create the 'my_app' virtual environment
     mkvirtualenv -p PATH/TO/PYTHON my_app
