@@ -30,7 +30,7 @@ This code base serves as a Feature request manager for any company
 * Live Demo : http://python-flask.cloudapp.net:5000/
 * Admin account : admin@example.com / Password1
 * User account : user@example.com / Password1
-* Client :
+* Client account :
   * Client A : clientA@example.com / Password1
   * Client B : clientB@example.com / Password1
   * Client C : clientC@example.com / Password1
